@@ -45,7 +45,7 @@ const App = () => {
 
     for (let x = 0; x < updatedQueues.length; x++) {
       if (updatedQueues[x].length === 0) continue;
-      else if (updatedQueues[x][0].duration === 0) {
+      else if (updatedQueues[x][0].duration <= 1) {
         updatedQueues[x].splice(0, 1);
       } else {
         updatedQueues[x][0] = {
