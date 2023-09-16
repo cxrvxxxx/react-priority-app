@@ -17,13 +17,8 @@ const getTotalDuration = (queue) => {
 
 const App = () => {
   const entityKey = useRef(0);
-  const priorityNumber = useRef(0);
 
   const [queues, setQueues] = useState([[], [], [], []]);
-
-  const handleGenerate = () => {
-    priorityNumber.current = priorityNumber.current + 1;
-  }
 
   const handleAdmit = (entity) => {
     /* Finds the queue with the least total duration */
