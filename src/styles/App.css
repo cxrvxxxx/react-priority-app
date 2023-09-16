@@ -25,16 +25,9 @@
   display: flex;
   align-items: center;
   height: 25%;
-  background-color: gray;
+  background-color: lightgray;
   width: 100%;
   justify-content: left;
-}
-
-.entity {
-  height: 64px;
-  width: 64px;
-  margin: 1em;
-  background-color: yellow;
-  text-align: center;
-  border-radius: 8px;
+  border: 1px solid black;
+  padding-left: 25px;
 }

@@ -10,7 +10,7 @@ const getRandomInt = (min, max) => {
 const Admit = ({ callback }) => {
     const handleAdmit = () => {
         callback({
-            "duration": getRandomInt(3, 10),
+            "duration": getRandomInt(3, 30),
             "isHighPriority": (getRandomInt(1, 100) >= 75) ? true : false
         });
     }

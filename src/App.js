@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/App.css';
 import Admit from './components/Admit';
+import PriorityNumber from './components/PriorityNumber';
 
 const getTotalDuration = (queue) => {
   if (queue.length === 0) return 0;
@@ -19,7 +20,7 @@ const App = () => {
 
   const [queues, setQueues] = useState([[], [], [], []]);
 
-  const handleAdmit = (priortyNumberData) => {
+  const handleAdmit = (priorityNumberData) => {
     /* Finds the queue with the least total duration */
     let shortestQueue = 0;
     for (let i = 1; i < queues.length; i++) {
@@ -31,26 +32,33 @@ const App = () => {
     priorityNumber.current = priorityNumber.current + 1
     const newPriorityNumber = {
       "priorityNumber": priorityNumber.current,
-      ...priortyNumberData
+      "initialDuration": priorityNumberData.duration,
+      ...priorityNumberData
     }
 
     /* Update state */
     const updatedQueues = [...queues];
-    updatedQueues[shortestQueue].push(newPriorityNumber);
+    if (newPriorityNumber.isHighPriority) {
+      updatedQueues[shortestQueue].splice(0, 0, newPriorityNumber);
+    } else {
+      updatedQueues[shortestQueue].push(newPriorityNumber);
+    }
     setQueues(updatedQueues);
   }
 
   const processQueue = () => {
     const updatedQueues = [...queues];
 
+    /* Decrements the first item in each queue */
     for (let x = 0; x < updatedQueues.length; x++) {
       if (updatedQueues[x].length === 0) continue;
-      else if (updatedQueues[x][0].duration <= 1) {
+      else if (updatedQueues[x][0].duration <= 0.1) {
+        /* Removes the first item if duration runs out */
         updatedQueues[x].splice(0, 1);
       } else {
         updatedQueues[x][0] = {
           ...updatedQueues[x][0],
-          "duration": updatedQueues[x][0].duration - 1
+          "duration": updatedQueues[x][0].duration - 0.1
         }
       }
 
@@ -63,7 +71,7 @@ const App = () => {
     /* Handles decrementing of duration */
     const intervalId = setInterval(() => {
       processQueue();
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -74,12 +82,15 @@ const App = () => {
         <Admit callback={handleAdmit} />
       </div>
       <div className="col2" >
-        {queues.map((queue) => (
+        {queues.map((queue, queueIndex) => (
           <div className="queue-block">
+            <h4>Queue #{queueIndex + 1} ({Math.round(getTotalDuration(queue))}) s.</h4>
             {queue.map((entity) => (
-              <div className="entity">
-                <h2>{entity.priorityNumber}<br /><h4>{entity.duration}</h4></h2>
-              </div>
+              <PriorityNumber
+                number={entity.priorityNumber}
+                duration={entity.duration}
+                initialDuration={entity.initialDuration}
+                isHighPriority={entity.isHighPriority} />
             ))}
           </div>
         ))}

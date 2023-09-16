@@ -1,0 +1,14 @@
+.entity {
+    display: flex;
+    flex-direction: column;
+    width: 5em;
+    margin: 1em;
+    background-color: white;
+    text-align: center;
+    border-radius: 5px;
+    border-radius: 1px solid black;
+}
+
+.high-priority {
+    color: red;
+}
