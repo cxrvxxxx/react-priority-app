@@ -54,18 +54,20 @@ const Admit = ({ queues, callback }) => {
     return (
         <div className="admitting" >
             <table>
-                <tr>
-                    <td className="label">Priority number:</td>
-                    <td className="number">{entity.priorityNumber}</td>
-                </tr>
-                <tr>
-                    <td className="label">Time to complete (in seconds):</td>
-                    <td>{entity.duration}</td>
-                </tr>
-                <tr>
-                    <td className="label">Priority:</td>
-                    <td><b>{(entity.isHighPriority) ? 'HIGH' : 'Normal'}</b></td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td className="label">Priority number:</td>
+                        <td className="number">{entity.priorityNumber}</td>
+                    </tr>
+                    <tr>
+                        <td className="label">Time to complete (in seconds):</td>
+                        <td>{entity.duration}</td>
+                    </tr>
+                    <tr>
+                        <td className="label">Priority:</td>
+                        <td><b>{(entity.isHighPriority) ? 'HIGH' : 'Normal'}</b></td>
+                    </tr>
+                </tbody>
             </table>
             <div className="button-container">
                 <Button

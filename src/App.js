@@ -16,6 +16,7 @@ const getTotalDuration = (queue) => {
 }
 
 const App = () => {
+  const entityKey = useRef(0);
   const priorityNumber = useRef(0);
 
   const [queues, setQueues] = useState([[], [], [], []]);
@@ -34,11 +35,20 @@ const App = () => {
 
     /* Update queues state */
     const updatedQueues = [...queues];
-    if (entity.isHighPriority) {
-      updatedQueues[shortestQueue].splice(0, 0, entity);
+    if (entity.isHighPriority && updatedQueues[shortestQueue].length > 1) {
+      /* Find the latest high-priority entity in the queue */
+      let idx = 0;
+      for (let i = 0; i < updatedQueues[shortestQueue].length; i++) {
+        if (updatedQueues[shortestQueue][i].isHighPriority) {
+          idx++;
+        }
+      }
+
+      updatedQueues[shortestQueue].splice(idx, 0, entity);
     } else {
       updatedQueues[shortestQueue].push(entity);
     }
+
     setQueues(updatedQueues);
   }
 
@@ -81,10 +91,11 @@ const App = () => {
       </div>
       <div className="col2" >
         {queues.map((queue, queueIndex) => (
-          <div className="queue-block">
+          <div key={entityKey.current++} className="queue-block">
             <h4>Queue #{queueIndex + 1} ({Math.round(getTotalDuration(queue))}) s.</h4>
             {queue.map((entity) => (
               <PriorityNumber
+                key={entityKey.current++}
                 number={entity.priorityNumber}
                 duration={entity.duration}
                 initialDuration={entity.initialDuration}
