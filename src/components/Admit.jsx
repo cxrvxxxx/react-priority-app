@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import "../styles/Admit.css";
 
@@ -21,6 +21,7 @@ const isUniqueNumber = (queues, number) => {
 }
 
 const Admit = ({ queues, callback }) => {
+    const [entityBuffer, setEntityBuffer] = useState([]);
     const [entity, setEntity] = useState({
         "priorityNumber": 0,
         "duration": 0,
@@ -30,8 +31,17 @@ const Admit = ({ queues, callback }) => {
     const [disabledAdmitButton, setDisabledAdmitButton] = useState(false);
 
     const handleGenerate = () => {
+        let updatedEntityBuffer = [...entityBuffer];
+
+        if (updatedEntityBuffer.length + 1 > 10) updatedEntityBuffer.splice(0, 1);
+
+        if (entity.priorityNumber !== 0) {
+            updatedEntityBuffer.push(entity);
+            setEntityBuffer(updatedEntityBuffer);
+        }
+
         let priorityNumber = getRandomInt(1, 100);
-        while (!isUniqueNumber(queues, priorityNumber)) priorityNumber = getRandomInt(1, 100);
+        while (!isUniqueNumber(queues, priorityNumber) && !isUniqueNumber([entityBuffer, []], priorityNumber)) priorityNumber = getRandomInt(1, 100);
         const duration = getRandomInt(3, 30);
         const isHighPriority = (getRandomInt(1, 100) > 75) ? true : false;
 
@@ -48,11 +58,52 @@ const Admit = ({ queues, callback }) => {
     const handleAdmit = () => {
         callback(entity);
 
+        setEntity({
+            "priorityNumber": 0,
+            "duration": 0,
+            "initialDuration": 0,
+            "isHighPriority": false
+        });
+
         setDisabledAdmitButton(true);
     }
 
     return (
         <div className="admitting" >
+            <div className="entity-buffer">
+                {entityBuffer.map((value, index) => (
+                    <div className="buffer-item">
+                        <h4>#<b>{value.priorityNumber}</b></h4>
+                        <Button
+                            variant="contained"
+                            color="success"
+                            size="small"
+                            onClick={() => {
+                                callback({
+                                    "priorityNumber": value.priorityNumber,
+                                    "duration": value.duration,
+                                    "initialDuration": value.duration,
+                                    "isHighPriority": value.isHighPriority
+                                });
+
+                                for (let i = 0; i < entityBuffer.length; i++) {
+                                    if (entityBuffer[i].priorityNumber === value.priorityNumber) {
+                                        const newEntityBuffer = [...entityBuffer];
+                                        newEntityBuffer.splice(i, 1);
+                                        setEntityBuffer(newEntityBuffer);
+                                    }
+                                }
+
+                                setEntity({
+                                    "priorityNumber": 0,
+                                    "duration": 0,
+                                    "initialDuration": 0,
+                                    "isHighPriority": false
+                                });
+                            }}>Admit</Button>
+                    </div>
+                ))}
+            </div>
             <table>
                 <tbody>
                     <tr>

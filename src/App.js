@@ -2,8 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import './styles/App.css';
 import Admit from './components/Admit';
 import PriorityNumber from './components/PriorityNumber';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const getTotalDuration = (queue) => {
+  /* Calculates the total duration of a queue */
   if (queue.length === 0) return 0;
 
   let totalDuration = 0;
@@ -15,33 +18,52 @@ const getTotalDuration = (queue) => {
   return totalDuration;
 }
 
+const getShortestQueueIndex = (queues) => {
+  /* Finds the shortest queue */
+  let shortestQueueIndex = 0;
+
+  for (let i = 1; i < queues.length; i++) {
+    if (getTotalDuration(queues[i]) < getTotalDuration(queues[shortestQueueIndex]))
+      shortestQueueIndex = i;
+  }
+
+  return shortestQueueIndex;
+}
+
+const getInsertIndex = (queue) => {
+  /* Finds the index to insert */
+  let idx = 0;
+
+  for (let i = 0; i < queue.length; i++) {
+    if (queue[i].duration !== queue[i].initialDuration)
+      idx++;
+    else if (queue[i].isHighPriority)
+      idx++;
+  }
+
+  return idx;
+}
+
 const App = () => {
   const entityKey = useRef(0);
 
   const [queues, setQueues] = useState([[], [], [], []]);
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
 
   const handleAdmit = (entity) => {
-    /* Finds the queue with the least total duration */
-    let shortestQueue = 0;
-    for (let i = 1; i < queues.length; i++) {
-      if (getTotalDuration(queues[i]) < getTotalDuration(queues[shortestQueue]))
-        shortestQueue = i;
-    }
+    const queueIndex = getShortestQueueIndex(queues);
 
     /* Update queues state */
     const updatedQueues = [...queues];
-    if (entity.isHighPriority && updatedQueues[shortestQueue].length > 1) {
-      /* Find the latest high-priority entity in the queue */
-      let idx = 0;
-      for (let i = 0; i < updatedQueues[shortestQueue].length; i++) {
-        if (updatedQueues[shortestQueue][i].isHighPriority) {
-          idx++;
-        }
-      }
 
-      updatedQueues[shortestQueue].splice(idx, 0, entity);
+    if (entity.isHighPriority) {
+      updatedQueues[queueIndex].splice(getInsertIndex(updatedQueues[queueIndex]), 0, entity);
     } else {
-      updatedQueues[shortestQueue].push(entity);
+      updatedQueues[queueIndex].push(entity);
     }
 
     setQueues(updatedQueues);
@@ -74,6 +96,7 @@ const App = () => {
       processQueue();
     }, 100);
 
+
     return () => clearInterval(intervalId);
   }, []);
 
@@ -83,6 +106,12 @@ const App = () => {
         <Admit
           queues={queues}
           callback={handleAdmit} />
+        <div className="checkbox-container">
+          <FormControlLabel
+            control={<Checkbox checked={checked} onChange={handleChange} />}
+            label="Pause Timer"
+          />
+        </div>
       </div>
       <div className="col2" >
         {queues.map((queue, queueIndex) => (
