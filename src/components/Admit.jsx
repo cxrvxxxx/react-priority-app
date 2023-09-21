@@ -41,7 +41,7 @@ const Admit = ({ queues, callback }) => {
         }
 
         let priorityNumber = getRandomInt(1, 100);
-        while (!isUniqueNumber(queues, priorityNumber) && !isUniqueNumber([entityBuffer, []], priorityNumber)) priorityNumber = getRandomInt(1, 100);
+        while (!isUniqueNumber(queues, priorityNumber) || !isUniqueNumber([entityBuffer, []], priorityNumber)) priorityNumber = getRandomInt(1, 100);
         const duration = getRandomInt(3, 30);
         const isHighPriority = (getRandomInt(1, 100) > 75) ? true : false;
 
@@ -94,12 +94,7 @@ const Admit = ({ queues, callback }) => {
                                     }
                                 }
 
-                                setEntity({
-                                    "priorityNumber": 0,
-                                    "duration": 0,
-                                    "initialDuration": 0,
-                                    "isHighPriority": false
-                                });
+;
                             }}>Admit</Button>
                     </div>
                 ))}

@@ -48,11 +48,6 @@ const App = () => {
   const entityKey = useRef(0);
 
   const [queues, setQueues] = useState([[], [], [], []]);
-  const [checked, setChecked] = useState(false);
-
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
 
   const handleAdmit = (entity) => {
     const queueIndex = getShortestQueueIndex(queues);
@@ -93,9 +88,8 @@ const App = () => {
   useEffect(() => {
     /* Handles decrementing of duration */
     const intervalId = setInterval(() => {
-      processQueue();
-    }, 100);
-
+        processQueue();
+      }, 100);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -106,12 +100,6 @@ const App = () => {
         <Admit
           queues={queues}
           callback={handleAdmit} />
-        <div className="checkbox-container">
-          <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            label="Pause Timer"
-          />
-        </div>
       </div>
       <div className="col2" >
         {queues.map((queue, queueIndex) => (
