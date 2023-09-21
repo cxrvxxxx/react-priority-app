@@ -62,3 +62,11 @@ Button {
     margin: 0;
     height: 32px;
 }
+
+.red {
+    color: red;
+}
+
+.black {
+    color: black;
+}

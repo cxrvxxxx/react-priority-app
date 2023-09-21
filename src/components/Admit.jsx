@@ -33,15 +33,19 @@ const Admit = ({ queues, callback }) => {
     const handleGenerate = () => {
         let updatedEntityBuffer = [...entityBuffer];
 
-        if (updatedEntityBuffer.length + 1 > 10) updatedEntityBuffer.splice(0, 1);
+        if (updatedEntityBuffer.length + 1 > 20) updatedEntityBuffer.splice(0, 1);
 
         if (entity.priorityNumber !== 0) {
             updatedEntityBuffer.push(entity);
             setEntityBuffer(updatedEntityBuffer);
         }
 
+        const entityBufferContainer = [
+            [...entityBuffer]
+        ];
+
         let priorityNumber = getRandomInt(1, 100);
-        while (!isUniqueNumber(queues, priorityNumber) || !isUniqueNumber([entityBuffer, []], priorityNumber)) priorityNumber = getRandomInt(1, 100);
+        while (!isUniqueNumber(queues, priorityNumber) && !isUniqueNumber(entityBufferContainer, priorityNumber)) priorityNumber = getRandomInt(1, 100);
         const duration = getRandomInt(3, 30);
         const isHighPriority = (getRandomInt(1, 100) > 75) ? true : false;
 
@@ -72,7 +76,7 @@ const Admit = ({ queues, callback }) => {
         <div className="admitting" >
             <div className="entity-buffer">
                 {entityBuffer.map((value, index) => (
-                    <div className="buffer-item">
+                    <div className={"buffer-item " + ((value.isHighPriority) ? "red" : "black")}>
                         <h4>#<b>{value.priorityNumber}</b></h4>
                         <Button
                             variant="contained"

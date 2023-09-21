@@ -20,9 +20,9 @@ const getTotalDuration = (queue) => {
 
 const getShortestQueueIndex = (queues) => {
   /* Finds the shortest queue */
-  let shortestQueueIndex = 0;
+  let shortestQueueIndex = 1;
 
-  for (let i = 1; i < queues.length; i++) {
+  for (let i = 2; i < queues.length; i++) {
     if (getTotalDuration(queues[i]) < getTotalDuration(queues[shortestQueueIndex]))
       shortestQueueIndex = i;
   }
@@ -56,7 +56,8 @@ const App = () => {
     const updatedQueues = [...queues];
 
     if (entity.isHighPriority) {
-      updatedQueues[queueIndex].splice(getInsertIndex(updatedQueues[queueIndex]), 0, entity);
+      // updatedQueues[queueIndex].splice(getInsertIndex(updatedQueues[queueIndex]), 0, entity);
+      updatedQueues[0].push(entity);
     } else {
       updatedQueues[queueIndex].push(entity);
     }
